@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Register'))
+@section('title','Register Student')
 
 @section('content')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" rel="stylesheet">
@@ -15,18 +15,10 @@
             @include('layouts.leftside-menubar')
         </div>
         <div class="col-md-8" id="main-container">
-            @if (session('status'))
-            <div class="alert alert-success">
-                {{ session('status') }}
-                {{-- Display View admin links --}}
-                @if (session('register_school_id'))
-                    <a href="{{ url('school/admin-list/' . session('register_school_id')) }}" target="_blank" class="text-white pull-right">@lang('View Admins')</a>
-                @endif
-            </div>
-            @endif
             <div class="panel panel-default">
-                <div class="page-panel-title">@lang('Register')</div>
+                <div class="page-panel-title">@lang('Register Student')</div>
                 <div class="panel-body">
+                    <div id="message"></div>
                     <form class="form-horizontal" method="POST" id="studentRegisterForm" action="{{ url('register') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
@@ -100,6 +92,27 @@
                                 @endif
                             </div>
                         </div>
+                        @if(isset($sessions))
+                        <div class="form-group">
+                            <label for="session" class="col-md-4 control-label">* @lang('Admission Session')</label>
+                            <div class="col-md-6">
+                                <select id="session" class="form-control" name="session">
+                                    @foreach ($sessions as $session)
+                                        @if ($loop->first)
+                                            <option value="{{$session}}" selected>{{$session}}</option>
+                                        @else
+                                            <option value="{{$session}}">{{$session}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('session'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('session') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                         <div class="form-group">
                             <label for="admission_date" class="col-md-4 control-label">* @lang('Admission Date')</label>
                             <div class="col-md-6">
@@ -245,6 +258,28 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="samagra_id" class="col-md-4 control-label">@lang('Bank Account No.')</label>
+                            <div class="col-md-6">
+                                <input id="bank_account" type="text" class="form-control" name="bank_account" value="{{ old('bank_account') }}" >
+                                @if ($errors->has('bank_account'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('bank_account') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ifsc" class="col-md-4 control-label">@lang('IFSC')</label>
+                            <div class="col-md-6">
+                                <input id="ifsc" type="text" class="form-control" name="ifsc" value="{{ old('ifsc') }}" >
+                                @if ($errors->has('ifsc'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('ifsc') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="scholar_no" class="col-md-4 control-label">* @lang('Scholar Number')</label>
                             <div class="col-md-6">
                                 <input id="scholar_no" type="text" class="form-control" name="scholar_no" value="{{ old('scholar_no') }}" >
@@ -329,7 +364,7 @@
 <script src="{{asset('js/jquery.validate.min.js')}}"></script>
 <script>
     $('#dob,#admission_date').datepicker({
-        format: "dd-mm-yyyy",
+        format: "dd/mm/yyyy",
     });
 
     $('#studentRegisterForm').validate({
@@ -337,7 +372,7 @@
             name: {
                 required:true
             },
-            gender: {
+            Gender: {
                 required:true
             },
             dob: {
@@ -350,6 +385,9 @@
                 required:true
             },
             admission_date: {
+                required:true
+            },
+            session: {
                 required:true
             },
             religion: {
@@ -370,9 +408,9 @@
             contact_1: {
                 required:true
             },
-            // scholar_no: {
-            //     required:true
-            // },
+            scholar_no: {
+                required:true
+            },
             family_code: {
                 required:true
             }
@@ -389,23 +427,24 @@
             }
         },
         submitHandler: function(form) {
-            // $('#registerBtn').attr('disabled', true);    
+            $('#registerBtn').attr('disabled', true);    
             $('#message').empty();
             $.ajax({
                 type: 'POST',
                 url: $("#studentRegisterForm").attr('action'),
-                data: $("#studentRegisterForm").serialize()  ,
+                data: $("#studentRegisterForm").serialize(),
                 success: function (response) {
-                    // $('#registerBtn').attr('disabled', false);
-                    if(response.success!=undefined)
-                    {
+                    $('#registerBtn').attr('disabled', false);
+                    if(response.success!=undefined){
+                        $('html, body').animate({
+                            scrollTop: 0
+                        }, 1000);
                         $('#message').append('<div class="alert alert-success alert-dismissible fade show" role="alert">'+response.success+'<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-                        setTimeout(function() {
-                            $('#message').empty();
-                            $("#modal_addnewuser").modal('hide');
-                            dataTable.draw();
-                        }, 2000);
+                        
                     }else if(response.error!=undefined){
+                        $('html, body').animate({
+                            scrollTop: 0
+                        }, 1000);
                         $('#message').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">'+response.error+'<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                     }
                 },
@@ -413,9 +452,5 @@
         }
     });
 
-
-    // $('#registerBtn').click(function () {
-    //     $("#registerForm").submit();
-    // });
 </script>
 @endsection

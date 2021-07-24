@@ -3,29 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Helpers\HelperService;
 use Validator;
 use Auth;
 use App\Classes;
 use Session;
 use App\AcademicYearHistory;
+use PDF;
 
 class UserController extends Controller{
     
     /**
      * load js and service helper
-     *
-     * @param HelperService $helperService
      */
-    public function __construct(HelperService $helperService){
-        header('Access-Control-Allow-Origin', '*');
-        $this->helperService = $helperService;
+    public function __construct(){
         $this->data['js'] = array('login');
     }
 
     // renders login page
     public function index(){
-                
         return view('login',$this->data);
     }
 
@@ -41,7 +36,7 @@ class UserController extends Controller{
         $password  = $request->password;
         $validator = Validator::make(request()->input(), [
              'email' => 'required',
-             'password' => array('required','min:8')
+             'password' => array('required')
         ]);
 
         if ($validator->fails()){

@@ -1,0 +1,4 @@
+SELECT marks,session,subject_id,scholar_number,exam_type FROM `exam_marks` GROUP by exam_type,subject_id,scholar_number ORDER by scholar_number ASC ,exam_type DESC
+
+
+CREATE VIEW `aggregate` SELECT marks,session,subject_id,scholar_number,exam_type FROM `exam_marks` GROUP by exam_type,subject_id,scholar_number ORDER by scholar_number ASC ,exam_type DESC

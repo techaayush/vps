@@ -17,7 +17,7 @@
                     </div>
                 @endif
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
+                    <form class="form-horizontal" id="loginForm" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group">

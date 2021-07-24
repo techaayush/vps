@@ -1,9 +1,8 @@
 @extends('layouts.app')
 
-@section('title', __('Register'))
+@section('title', ('Search Family'))
 
 @section('content')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" rel="stylesheet">
 <style>
 
 /*the container must be positioned relative:*/
@@ -60,25 +59,28 @@ input[type=submit] {
             @include('layouts.leftside-menubar')
         </div>
         <div class="col-md-10" id="main-container">
-            @if (session('status'))
-            <div class="alert alert-success">
-                @if (session('register_school_id'))
-                    <a href="{{ url('school/admin-list/' . session('register_school_id')) }}" target="_blank" class="text-white pull-right">@lang('View Admins')</a>
-                @endif
-            </div>
-            @endif
             <div class="panel panel-default">
                 <div class="card-body mt-3">
                     <div id="message"></div>
                       <h4>Find Student Family</h4>
-                      <div class="autocomplete" style="width:800px;">
-                        <input id="student_name" type="text" name="student_name" placeholder="Search student" data-id>
-                        <div id="searchResult" class="autocomplete-items"></div>
+                      <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" >
+                              <input class="form-control" id="student_name" type="text" name="student_name" placeholder="Search student" data-id>
+                              <span id="student_name-error" style="display: none;color: red">Student name is required</span>
+                              <div id="searchResult" class="autocomplete-items"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                          <input type="submit" value="Search">
+                        </div>
                       </div>
-                      <input type="submit" value="Search">
-                      <span class="">
-                        If Not Found? <a class="" href="{{url('register')}}">Register?</a>
-                      </span>
+                      <div class="row">
+                          <div class="col-md-6">
+                            <label>If Not Found? </label>
+                            <a class="btn btn-success" href="{{url('register')}}">Click here to Register</a>
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>
@@ -87,9 +89,12 @@ input[type=submit] {
 
 <script type="text/javascript">
     var route = "{{url('search_family_autocomplete')}}";
-    $('#student_name').keyup(function(){
-        var searchText = $(this).val();
+    $('#student_name').keyup(function(event){
+    // $('#student_name').on('input',function(){
+        var searchText = $(this).val().trim();
         if(searchText != ""){
+          //console.log('testing',event.keyCode);
+
             $.ajax({
                 url:route,
                 data:{student_name:searchText},
@@ -104,6 +109,8 @@ input[type=submit] {
                     }
                 }
             });
+        }else{
+          $("#searchResult").empty();
         }
     });
 
@@ -113,10 +120,13 @@ input[type=submit] {
         $("#student_name").val(value);
         $('#student_name').attr('data-id',familyId);
         $("#searchResult").empty();
+        $('#student_name-error').css('display','none');
     });
 
     $('input[type="submit"]').click(function(e){
-        if($("#student_name").val())
+        if($('#student_name').val() == ''){
+          $('#student_name-error').css('display','block');
+        }else{
           $.ajax({
               type: 'GET',
               url: "{{url('search_family_details')}}",
@@ -132,6 +142,7 @@ input[type=submit] {
                   }
               }
           });
+        }
      });
     
 </script>

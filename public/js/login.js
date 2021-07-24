@@ -1,52 +1,18 @@
-export default class Login {
+// export default class Login {
 
-    static init() {
+    // static init() {
 
-        $('input').iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' /* optional */
-        });
+    //     $('input').iCheck({
+    //         checkboxClass: 'icheckbox_square-blue',
+    //         radioClass: 'iradio_square-blue',
+    //         increaseArea: '20%' /* optional */
+    //     });
 
 
-        $("#loginForm").validate({
-            rules: {
-                username: {
-                    required: true,
-                    minlength: 5
-                },
-                password: {
-                    required: true,
-                    minlength: 6
-                }
-            },
-            messages: {
-                username: {
-                    required: "Please enter a username",
-                    minlength: "Your username must consist of at least 5 characters"
-                },
-                password: {
-                    required: "Please provide a password",
-                    minlength: "Your password must be at least 6 characters long"
-                }
-            },
-            errorElement: "em",
-            errorPlacement: function (error, element) {
-                // Add the `help-block` class to the error element
-                error.addClass("help-block");
-                error.insertAfter(element);
+        
+    // }
 
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).parents(".form-group").addClass("has-error").removeClass("has-success");
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).parents(".form-group").addClass("has-success").removeClass("has-error");
-            }
-        });
-    }
-
-    static forgot() {
+    /*static forgot() {
         $("#forgotForm").validate({
             rules: {
                 email: {
@@ -266,6 +232,25 @@ export default class Login {
                 $(element).parents(".form-group").addClass("has-success").removeClass("has-error");
             }
         });
-    }
+    }*/
 
-}
+// }
+
+$(function(){
+    $("#loginForm").validate({
+            rules: {
+                email: {
+                    required: true
+                },
+                password: {
+                    required: true
+                }
+            },
+            errorPlacement: function (error, element) {
+                // Add the `help-block` class to the error element
+                error.addClass("help-block");
+                error.insertAfter(element);
+
+            }
+        });
+})

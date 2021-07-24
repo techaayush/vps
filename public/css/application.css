@@ -208,3 +208,7 @@ a:focus {
     padding-bottom: 0px !important;
     line-height: 60px !important;
 }
+
+.error {
+    color: red;
+}

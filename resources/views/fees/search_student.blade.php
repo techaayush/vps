@@ -1,9 +1,8 @@
 @extends('layouts.app')
 
-@section('title', __('Register'))
+@section('title', ('Search Student'))
 
 @section('content')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" rel="stylesheet">
 <style>
 
 /*the container must be positioned relative:*/
@@ -60,13 +59,6 @@ input[type=submit] {
             @include('layouts.leftside-menubar')
         </div>
         <div class="col-md-10" id="main-container">
-            @if (session('status'))
-            <div class="alert alert-success">
-                @if (session('register_school_id'))
-                    <a href="{{ url('school/admin-list/' . session('register_school_id')) }}" target="_blank" class="text-white pull-right">@lang('View Admins')</a>
-                @endif
-            </div>
-            @endif
             <div class="panel panel-default">
                 <div class="card-body mt-3">
                     <div id="message"></div>
@@ -85,7 +77,7 @@ input[type=submit] {
 <script type="text/javascript">
     var route = "{{url('search_student_autocomplete')}}";
     $('#student_name').keyup(function(){
-        var searchText = $(this).val();
+        var searchText = $(this).val().trim();
         if(searchText != ""){
             $.ajax({
                 url:route,
@@ -101,6 +93,8 @@ input[type=submit] {
                     }
                 }
             });
+        }else{
+          $("#searchResult").empty();
         }
     });
 
@@ -124,7 +118,9 @@ input[type=submit] {
                     $('#student_name').val('');
                     location.href = '{{url("fees_entry")}}/'+response.id;
                   }
-                  else{
+                  else if(response.message!=undefined){
+                    $('#message').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">'+response.message+'<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                  }else{
                     $('#message').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">No Record Found<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                   }
               }
